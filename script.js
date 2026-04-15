@@ -2,7 +2,6 @@ const formatoEuro = new Intl.NumberFormat('pt-PT', { style: 'currency', currency
 const formatoNumero = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 0 });
 let graficoCircular;
 
-// Função de Navegação das Tabs
 function mudarSeparador(idSeparador, elementoBotao) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -10,7 +9,6 @@ function mudarSeparador(idSeparador, elementoBotao) {
     elementoBotao.classList.add('active');
 }
 
-// 1. CÁLCULO DA FÓRMULA DE HUBBART
 function calcularHubbart() {
     let quartos = parseFloat(document.getElementById("quartos").value) || 0;
     let ocupacao = parseFloat(document.getElementById("ocupacao").value) || 0;
@@ -39,7 +37,6 @@ function calcularHubbart() {
     atualizarGrafico(lucroDesejado, valorImpostos, custosOperacionaisTotais);
 }
 
-// Gráfico da Hubbart
 function atualizarGrafico(lucro, impostos, custos) {
     let ctx = document.getElementById('graficoHubbart');
     if (!ctx) return; 
@@ -55,7 +52,6 @@ function atualizarGrafico(lucro, impostos, custos) {
     });
 }
 
-// 2. CÁLCULO DE KPIs E MARKUP
 function calcularKpis() {
     let rec = parseFloat(document.getElementById("kpiReceita").value) || 0;
     let disp = parseFloat(document.getElementById("kpiDisp").value) || 0;
@@ -67,7 +63,6 @@ function calcularKpis() {
     let adr = ocup > 0 ? (rec / ocup) : 0;
     let revpar = disp > 0 ? (rec / disp) : 0;
     
-    // NetRevPAR retira o IVA e as Comissões do RevPAR
     let netRevpar = (revpar / (1 + (iva / 100))) * (1 - (comissao / 100));
     let markup = copar > 0 ? (netRevpar / copar) : 0;
 
@@ -82,15 +77,43 @@ function calcularKpis() {
     document.getElementById("resKpiStatus").innerHTML = statusHtml;
 }
 
-// 3. CÁLCULO DE CUSTOS E BREAK-EVEN
+// A NOSSA NOVA FUNÇÃO MÁGICA
+function calcularInverso() {
+    let revpar = parseFloat(document.getElementById("invRevpar").value) || 0;
+    let iva = parseFloat(document.getElementById("invIva").value) || 0;
+    let com = parseFloat(document.getElementById("invCom").value) || 0;
+    let markup = parseFloat(document.getElementById("invMarkup").value) || 0;
+    let percFixos = parseFloat(document.getElementById("invFixos").value) || 0;
+
+    // Primeiro tira os impostos e comissões do RevPAR
+    let netRevpar = (revpar / (1 + (iva / 100))) * (1 - (com / 100));
+    
+    // Calcula o COPAR fazendo Engenharia Inversa
+    let copar = markup > 0 ? (netRevpar / markup) : 0;
+    
+    // Extra: Divide em Custos Fixos e Variáveis se o exercício pedir (ex: exercício 10 e 25)
+    let cf = copar * (percFixos / 100);
+    let cv = copar - cf;
+
+    document.getElementById("resInvNet").innerText = formatoEuro.format(netRevpar);
+    document.getElementById("resInvCopar").innerText = formatoEuro.format(copar);
+    
+    // Só mostra a divisão de custos se o utilizador colocar uma percentagem maior que 0
+    if (percFixos > 0) {
+        document.getElementById("resInvCF").innerText = formatoEuro.format(cf);
+        document.getElementById("resInvCV").innerText = formatoEuro.format(cv);
+    } else {
+        document.getElementById("resInvCF").innerText = "--";
+        document.getElementById("resInvCV").innerText = "--";
+    }
+}
+
 function calcularCustos() {
-    // 1 por 1000
     let invest = parseFloat(document.getElementById("milInvest").value) || 0;
     let quartos = parseFloat(document.getElementById("milQuartos").value) || 0;
     let precoMil = quartos > 0 ? (invest / quartos) / 1000 : 0;
     document.getElementById("resMilPreco").innerText = formatoEuro.format(precoMil);
 
-    // Break Even
     let fixos = parseFloat(document.getElementById("beFixos").value) || 0;
     let varUnit = parseFloat(document.getElementById("beVar").value) || 0;
     let precoUnit = parseFloat(document.getElementById("bePreco").value) || 0;
@@ -103,10 +126,8 @@ function calcularCustos() {
     document.getElementById("resBeRec").innerText = formatoEuro.format(beReceita);
 }
 
-// 4. CÁLCULO DE HIT OR MISS
 function calcularHitMiss() {
     let q = parseFloat(document.getElementById("hitQuartos").value) || 0;
-    
     let pBaixa = parseFloat(document.getElementById("hitBaixaP").value) || 0;
     let oBaixa = parseFloat(document.getElementById("hitBaixaO").value) || 0;
     let recBaixa = pBaixa * q * (oBaixa / 100);
@@ -128,14 +149,14 @@ function calcularHitMiss() {
     if(maxRec === recBaixa) vencedor = "Época Baixa ❄️";
     if(maxRec === recMedia) vencedor = "Época Média 🌼";
     if(maxRec === recAlta) vencedor = "Época Alta ☀️";
-    
     document.getElementById("resHitVencedor").innerText = vencedor + " (" + formatoEuro.format(maxRec) + ")";
 }
 
-// Arrancar todos os cálculos assim que a página abre
+// Arranca todos os cálculos, incluindo o novo inverso
 window.onload = function() {
     calcularHubbart();
     calcularKpis();
+    calcularInverso();
     calcularCustos();
     calcularHitMiss();
 };
