@@ -1,162 +1,55 @@
-const formatoEuro = new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'EUR' });
-const formatoNumero = new Intl.NumberFormat('pt-PT', { maximumFractionDigits: 0 });
-let graficoCircular;
+// Função para alternar os campos de input baseados no cenário escolhido
+function alternarCamposInversos() {
+    const cenario = document.getElementById("cenarioInverso").value;
+    const container = document.getElementById("campos_inversos");
+    let html = "";
 
-function mudarSeparador(idSeparador, elementoBotao) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(idSeparador).style.display = 'block';
-    elementoBotao.classList.add('active');
-}
-
-function calcularHubbart() {
-    let quartos = parseFloat(document.getElementById("quartos").value) || 0;
-    let ocupacao = parseFloat(document.getElementById("ocupacao").value) || 0;
-    let capital = parseFloat(document.getElementById("capital").value) || 0;
-    let roe = parseFloat(document.getElementById("roe").value) || 0;
-    let irc = parseFloat(document.getElementById("irc").value) || 0;
-    let emprestimo = parseFloat(document.getElementById("emprestimo").value) || 0;
-    let juros = parseFloat(document.getElementById("juros").value) || 0;
-    let custosGerais = parseFloat(document.getElementById("custosGerais").value) || 0;
-    let custoQuarto = parseFloat(document.getElementById("custoQuarto").value) || 0;
-    let outrasReceitas = parseFloat(document.getElementById("outrasReceitas").value) || 0;
-
-    let diarias = quartos * 365 * (ocupacao / 100);
-    let lucroDesejado = capital * (roe / 100);
-    let lucroAntesImpostos = lucroDesejado / (1 - (irc / 100));
-    let valorImpostos = lucroAntesImpostos - lucroDesejado; 
-    let custoJuros = emprestimo * (juros / 100);
-    let custosDiretos = diarias * custoQuarto;
-    let custosOperacionaisTotais = custoJuros + custosGerais + custosDiretos - outrasReceitas; 
-    let receitaExigida = lucroAntesImpostos + custosOperacionaisTotais;
-    let adr = diarias > 0 ? (receitaExigida / diarias) : 0;
-
-    document.getElementById("resReceita").innerText = formatoEuro.format(receitaExigida);
-    document.getElementById("resAdr").innerText = formatoEuro.format(adr);
-
-    atualizarGrafico(lucroDesejado, valorImpostos, custosOperacionaisTotais);
-}
-
-function atualizarGrafico(lucro, impostos, custos) {
-    let ctx = document.getElementById('graficoHubbart');
-    if (!ctx) return; 
-    if (graficoCircular) graficoCircular.destroy();
-    
-    graficoCircular = new Chart(ctx.getContext('2d'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Lucro Limpo', 'Impostos (IRC)', 'Custos Operacionais'],
-            datasets: [{ data: [lucro, impostos, custos], backgroundColor: ['#238636', '#da3633', '#1f6feb'], borderColor: '#0d1117', borderWidth: 3 }]
-        },
-        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { color: '#c9d1d9', font: {size: 13} } } } }
-    });
-}
-
-function calcularKpis() {
-    let rec = parseFloat(document.getElementById("kpiReceita").value) || 0;
-    let disp = parseFloat(document.getElementById("kpiDisp").value) || 0;
-    let ocup = parseFloat(document.getElementById("kpiOcup").value) || 0;
-    let iva = parseFloat(document.getElementById("kpiIva").value) || 0;
-    let comissao = parseFloat(document.getElementById("kpiCom").value) || 0;
-    let copar = parseFloat(document.getElementById("kpiCopar").value) || 0;
-
-    let adr = ocup > 0 ? (rec / ocup) : 0;
-    let revpar = disp > 0 ? (rec / disp) : 0;
-    
-    let netRevpar = (revpar / (1 + (iva / 100))) * (1 - (comissao / 100));
-    let markup = copar > 0 ? (netRevpar / copar) : 0;
-
-    document.getElementById("resKpiAdr").innerText = formatoEuro.format(adr);
-    document.getElementById("resKpiRevpar").innerText = formatoEuro.format(revpar);
-    document.getElementById("resKpiNet").innerText = formatoEuro.format(netRevpar);
-    document.getElementById("resKpiMarkup").innerText = markup.toFixed(2);
-
-    let statusHtml = markup >= 4.01 
-        ? "<span style='color:#3fb950;'>✅ Negócio Sustentável (>4.01)</span>" 
-        : "<span style='color:#da3633;'>⚠️ Risco Operacional (<4.01)</span>";
-    document.getElementById("resKpiStatus").innerHTML = statusHtml;
-}
-
-// A NOSSA NOVA FUNÇÃO MÁGICA
-function calcularInverso() {
-    let revpar = parseFloat(document.getElementById("invRevpar").value) || 0;
-    let iva = parseFloat(document.getElementById("invIva").value) || 0;
-    let com = parseFloat(document.getElementById("invCom").value) || 0;
-    let markup = parseFloat(document.getElementById("invMarkup").value) || 0;
-    let percFixos = parseFloat(document.getElementById("invFixos").value) || 0;
-
-    // Primeiro tira os impostos e comissões do RevPAR
-    let netRevpar = (revpar / (1 + (iva / 100))) * (1 - (com / 100));
-    
-    // Calcula o COPAR fazendo Engenharia Inversa
-    let copar = markup > 0 ? (netRevpar / markup) : 0;
-    
-    // Extra: Divide em Custos Fixos e Variáveis se o exercício pedir (ex: exercício 10 e 25)
-    let cf = copar * (percFixos / 100);
-    let cv = copar - cf;
-
-    document.getElementById("resInvNet").innerText = formatoEuro.format(netRevpar);
-    document.getElementById("resInvCopar").innerText = formatoEuro.format(copar);
-    
-    // Só mostra a divisão de custos se o utilizador colocar uma percentagem maior que 0
-    if (percFixos > 0) {
-        document.getElementById("resInvCF").innerText = formatoEuro.format(cf);
-        document.getElementById("resInvCV").innerText = formatoEuro.format(cv);
-    } else {
-        document.getElementById("resInvCF").innerText = "--";
-        document.getElementById("resInvCV").innerText = "--";
+    if (cenario === "copar_simples") {
+        html = `<div><label>RevPAR (€):</label><input type="number" id="inv_p1" value="200" oninput="executarCenario()"></div>
+                <div><label>Markup:</label><input type="number" id="inv_p2" value="4.05" oninput="executarCenario()"></div>
+                <div><label>IVA (%):</label><input type="number" id="inv_p3" value="6" oninput="executarCenario()"></div>
+                <div><label>Comissão (%):</label><input type="number" id="inv_p4" value="0" oninput="executarCenario()"></div>`;
+    } else if (cenario === "revpar_via_net") {
+        html = `<div><label>NetRevPAR (€):</label><input type="number" id="inv_p1" value="262.55" oninput="executarCenario()"></div>
+                <div><label>IVA (%):</label><input type="number" id="inv_p2" value="6" oninput="executarCenario()"></div>
+                <div><label>Comissão (%):</label><input type="number" id="inv_p3" value="15" oninput="executarCenario()"></div>`;
+    } else if (cenario === "copar_via_lucro") {
+        html = `<div><label>Lucro Líquido (€):</label><input type="number" id="inv_p1" value="382500" oninput="executarCenario()"></div>
+                <div><label>NetRevPAR (€):</label><input type="number" id="inv_p2" value="65.2" oninput="executarCenario()"></div>
+                <div><label>Room Nights (Volume):</label><input type="number" id="inv_p3" value="57700" oninput="executarCenario()"></div>`;
     }
+    container.innerHTML = html;
+    executarCenario();
 }
 
-function calcularCustos() {
-    let invest = parseFloat(document.getElementById("milInvest").value) || 0;
-    let quartos = parseFloat(document.getElementById("milQuartos").value) || 0;
-    let precoMil = quartos > 0 ? (invest / quartos) / 1000 : 0;
-    document.getElementById("resMilPreco").innerText = formatoEuro.format(precoMil);
+// Executa a matemática de cada cenário
+function executarCenario() {
+    const cenario = document.getElementById("cenarioInverso").value;
+    const p1 = parseFloat(document.getElementById("inv_p1")?.value) || 0;
+    const p2 = parseFloat(document.getElementById("inv_p2")?.value) || 0;
+    const p3 = parseFloat(document.getElementById("inv_p3")?.value) || 0;
+    const p4 = parseFloat(document.getElementById("inv_p4")?.value) || 0;
+    let resultado = "";
 
-    let fixos = parseFloat(document.getElementById("beFixos").value) || 0;
-    let varUnit = parseFloat(document.getElementById("beVar").value) || 0;
-    let precoUnit = parseFloat(document.getElementById("bePreco").value) || 0;
-    
-    let margem = precoUnit - varUnit;
-    let beVolume = margem > 0 ? (fixos / margem) : 0;
-    let beReceita = beVolume * precoUnit;
-
-    document.getElementById("resBeVol").innerText = formatoNumero.format(beVolume);
-    document.getElementById("resBeRec").innerText = formatoEuro.format(beReceita);
+    if (cenario === "copar_simples") {
+        let net = (p1 / (1 + (p3 / 100))) * (1 - (p4 / 100));
+        resultado = "COPAR: " + formatoEuro.format(net / p2);
+    } else if (cenario === "revpar_via_net") {
+        // RevPAR = (NetRevPAR / (1 - comissao)) * (1 + iva)
+        let rev = (p1 / (1 - (p3 / 100))) * (1 + (p2 / 100));
+        resultado = "RevPAR: " + formatoEuro.format(rev);
+    } else if (cenario === "copar_via_lucro") {
+        // Resultado Aloj. = NetRevPAR * Volume
+        // COPAR = (Resultado Aloj. - Lucro Líquido) / Volume -> Simplificando:
+        let copar = p2 - (p1 / p3);
+        resultado = "COPAR: " + formatoEuro.format(copar);
+    }
+    document.getElementById("resInversoFinal").innerText = resultado;
 }
 
-function calcularHitMiss() {
-    let q = parseFloat(document.getElementById("hitQuartos").value) || 0;
-    let pBaixa = parseFloat(document.getElementById("hitBaixaP").value) || 0;
-    let oBaixa = parseFloat(document.getElementById("hitBaixaO").value) || 0;
-    let recBaixa = pBaixa * q * (oBaixa / 100);
-
-    let pMedia = parseFloat(document.getElementById("hitMediaP").value) || 0;
-    let oMedia = parseFloat(document.getElementById("hitMediaO").value) || 0;
-    let recMedia = pMedia * q * (oMedia / 100);
-
-    let pAlta = parseFloat(document.getElementById("hitAltaP").value) || 0;
-    let oAlta = parseFloat(document.getElementById("hitAltaO").value) || 0;
-    let recAlta = pAlta * q * (oAlta / 100);
-
-    document.getElementById("resHitBaixa").innerText = formatoEuro.format(recBaixa);
-    document.getElementById("resHitMedia").innerText = formatoEuro.format(recMedia);
-    document.getElementById("resHitAlta").innerText = formatoEuro.format(recAlta);
-
-    let maxRec = Math.max(recBaixa, recMedia, recAlta);
-    let vencedor = "";
-    if(maxRec === recBaixa) vencedor = "Época Baixa ❄️";
-    if(maxRec === recMedia) vencedor = "Época Média 🌼";
-    if(maxRec === recAlta) vencedor = "Época Alta ☀️";
-    document.getElementById("resHitVencedor").innerText = vencedor + " (" + formatoEuro.format(maxRec) + ")";
-}
-
-// Arranca todos os cálculos, incluindo o novo inverso
+// Adiciona o arranque dos cenários no window.onload
+const oldOnload = window.onload;
 window.onload = function() {
-    calcularHubbart();
-    calcularKpis();
-    calcularInverso();
-    calcularCustos();
-    calcularHitMiss();
+    if (oldOnload) oldOnload();
+    alternarCamposInversos();
 };
