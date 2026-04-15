@@ -1,0 +1,13 @@
+# Ficheiros de sistema do macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Ficheiros de sistema do Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Ficheiros temporários de editores de código (como o VS Code)
+.vscode/
+*.swp
