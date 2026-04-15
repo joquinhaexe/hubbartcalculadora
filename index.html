@@ -5,75 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora - Fórmula de Hubbart</title>
     <style>
-        /* Fundo e texto principal com as cores do GitHub Dark */
+        /* --- ESTILOS DO ECRÃ (DARK MODE) --- */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
-            background-color: #0d1117; /* Fundo exato do GitHub */
-            color: #c9d1d9; /* Cor do texto cinza claro */
+            background-color: #0d1117; 
+            color: #c9d1d9; 
             padding: 20px; 
             margin: 0; 
         }
         
         h2 { text-align: center; color: #c9d1d9; margin-bottom: 30px; }
         
-        /* O "caixote" principal com uma cor ligeiramente mais clara para destacar do fundo */
         .container { max-width: 1000px; margin: 0 auto; background-color: #161b22; border: 1px solid #30363d; padding: 30px; border-radius: 6px; }
         
         .layout-principal { display: flex; gap: 30px; flex-wrap: wrap; }
         .area-inputs { flex: 2; min-width: 300px; }
         .grelha-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
-        /* Caixas de input com o estilo do GitHub */
         label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #c9d1d9; }
         input { 
-            width: 100%; 
-            padding: 10px; 
-            background-color: #0d1117; 
-            color: #c9d1d9; 
-            border: 1px solid #30363d; 
-            border-radius: 6px; 
-            box-sizing: border-box; 
-            font-size: 15px; 
+            width: 100%; padding: 10px; background-color: #0d1117; color: #c9d1d9; 
+            border: 1px solid #30363d; border-radius: 6px; box-sizing: border-box; font-size: 15px; 
         }
-        
-        /* Efeito quando clicas na caixa para escrever */
         input:focus { border-color: #58a6ff; outline: none; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3); }
         
         .area-resultados { flex: 1; min-width: 300px; }
         
-        /* A caixa verde com o estilo "Success" do GitHub */
         .result-box { 
-            padding: 25px; 
-            background-color: rgba(35, 134, 54, 0.1); /* Verde transparente */
-            border: 1px solid #238636; /* Verde GitHub */
-            border-radius: 6px; 
-            height: 100%; 
-            box-sizing: border-box; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
+            padding: 25px; background-color: rgba(35, 134, 54, 0.1); border: 1px solid #238636; 
+            border-radius: 6px; height: 100%; box-sizing: border-box; display: flex; 
+            flex-direction: column; justify-content: center; 
         }
         
         .result-item { margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #30363d; padding-bottom: 10px;}
         .result-item strong { color: #8b949e; }
         
-        /* O preço final bem destacado a verde */
         .final-adr { font-size: 26px; font-weight: bold; color: #3fb950; text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #30363d; }
         
+        /* Estilo dos Botões */
+        .area-botoes { grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 10px; }
+        button { 
+            padding: 10px 15px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; 
+        }
+        .btn-imprimir { background-color: #238636; color: white; border: 1px solid rgba(240,246,252,0.1); }
+        .btn-imprimir:hover { background-color: #2ea043; }
+        
+        .btn-limpar { background-color: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+        .btn-limpar:hover { background-color: #30363d; }
+
         @media (max-width: 768px) {
             .grelha-inputs { grid-template-columns: 1fr; }
+        }
+
+        /* --- ESTILOS PARA IMPRESSÃO / PDF --- */
+        @media print {
+            body { background-color: white; color: black; padding: 0; }
+            .container { background-color: white; border: none; padding: 0; max-width: 100%; }
+            h2 { color: black; }
+            label { color: #333; }
+            input { background-color: white; color: black; border: 1px solid #ccc; }
+            .result-box { background-color: #f6fff8; border: 2px solid #238636; }
+            .result-item { border-bottom: 1px solid #ccc; }
+            .result-item strong { color: black; }
+            .final-adr { border-top: 1px dashed #ccc; color: #1a5e20; }
+            .area-botoes { display: none; } /* Esconde os botões no PDF */
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Fórmula de Hubbart</h2>
+    <h2>Fórmula de Hubbart - Relatório</h2>
     
     <div class="layout-principal">
         
         <div class="area-inputs">
-            <div class="grelha-inputs">
+            <form id="formHubbart" class="grelha-inputs">
                 <div>
                     <label>Total de Quartos:</label>
                     <input type="number" id="quartos" value="230" oninput="calcular()">
@@ -114,7 +121,12 @@
                     <label>Outras Receitas (F&B + Outros - Telefones) (€):</label>
                     <input type="number" id="outrasReceitas" value="295000" oninput="calcular()">
                 </div>
-            </div>
+                
+                <div class="area-botoes">
+                    <button type="button" class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / PDF</button>
+                    <button type="button" class="btn-limpar" onclick="limparDados()">🔄 Restaurar Valores Iniciais</button>
+                </div>
+            </form>
         </div>
 
         <div class="area-resultados">
@@ -147,19 +159,29 @@
         let custoQuarto = parseFloat(document.getElementById("custoQuarto").value) || 0;
         let outrasReceitas = parseFloat(document.getElementById("outrasReceitas").value) || 0;
 
+        // Se houver 0 diárias (quando limpam a caixa), evitamos erro de divisão por zero
         let diarias = quartos * 365 * (ocupacao / 100);
+        
         let lucroDesejado = capital * (roe / 100);
         let lucroAntesImpostos = lucroDesejado / (1 - (irc / 100));
         let custoJuros = emprestimo * (juros / 100);
         let custosDiretos = diarias * custoQuarto;
         
         let receitaExigida = lucroAntesImpostos + custoJuros + custosGerais + custosDiretos - outrasReceitas;
-        let adr = receitaExigida / diarias;
+        
+        // Se as diárias forem 0, mostramos o preço como 0€ em vez de "Infinity"
+        let adr = diarias > 0 ? (receitaExigida / diarias) : 0;
 
         document.getElementById("resDiarias").innerText = formatoNumero.format(diarias);
         document.getElementById("resLucro").innerText = formatoEuro.format(lucroAntesImpostos);
         document.getElementById("resReceita").innerText = formatoEuro.format(receitaExigida);
         document.getElementById("resAdr").innerText = formatoEuro.format(adr);
+    }
+
+    // Função nova que dá reset ao formulário
+    function limparDados() {
+        document.getElementById("formHubbart").reset();
+        calcular(); // Recalcula para mostrar os valores base novamente
     }
 
     window.onload = calcular;
