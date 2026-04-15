@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Gestão Hoteleira</title>
     <link rel="stylesheet" href="style.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -14,89 +13,121 @@
     <h2>📊 Dashboard de Alojamentos</h2>
     
     <div class="tab-menu">
-        <button class="tab-btn active" onclick="mudarSeparador('tab-hubbart', this)">Fórmula de Hubbart</button>
-        <button class="tab-btn" onclick="mudarSeparador('tab-revpar', this)">RevPAR & GOPPAR (Em Breve)</button>
+        <button class="tab-btn active" onclick="mudarSeparador('tab-hubbart', this)">Hubbart</button>
+        <button class="tab-btn" onclick="mudarSeparador('tab-kpis', this)">KPIs & Markup</button>
+        <button class="tab-btn" onclick="mudarSeparador('tab-custos', this)">Break-Even & 1/1000</button>
+        <button class="tab-btn" onclick="mudarSeparador('tab-hitmiss', this)">Hit or Miss</button>
     </div>
 
     <div id="tab-hubbart" class="tab-content" style="display: block;">
         <div class="layout-principal">
-            
             <div class="area-inputs">
                 <form id="formHubbart" class="grelha-inputs">
-                    <div>
-                        <label>Total de Quartos:</label>
-                        <input type="number" id="quartos" value="230" oninput="calcular()">
-                    </div>
-                    <div>
-                        <label>Taxa de Ocupação (%):</label>
-                        <input type="number" id="ocupacao" value="80" oninput="calcular()">
-                    </div>
-                    <div>
-                        <label>Capital Próprio (€):</label>
-                        <input type="number" id="capital" value="4500000" oninput="calcular()">
-                    </div>
-                    <div>
-                        <label>Lucro Desejado (ROE %):</label>
-                        <input type="number" id="roe" value="17" oninput="calcular()">
-                    </div>
-                    <div>
-                        <label>Imposto IRC (%):</label>
-                        <input type="number" id="irc" value="40" oninput="calcular()">
-                    </div>
-                    <div>
-                        <label>Empréstimo Bancário (€):</label>
-                        <input type="number" id="emprestimo" value="7500000" oninput="calcular()">
-                    </div>
-                    <div>
-                        <label>Taxa de Juro (%):</label>
-                        <input type="number" id="juros" value="12" oninput="calcular()">
-                    </div>
-                    <div>
-                        <label>Custo Direto por Quarto (€):</label>
-                        <input type="number" id="custoQuarto" value="12" oninput="calcular()">
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label>Custos Gerais (Amortizações + Não Distribuídos) (€):</label>
-                        <input type="number" id="custosGerais" value="2050000" oninput="calcular()">
-                    </div>
-                    <div style="grid-column: 1 / -1;">
-                        <label>Outras Receitas (F&B + Outros) (€):</label>
-                        <input type="number" id="outrasReceitas" value="295000" oninput="calcular()">
-                    </div>
-                    
+                    <div><label>Total de Quartos:</label><input type="number" id="quartos" value="230" oninput="calcularHubbart()"></div>
+                    <div><label>Taxa de Ocupação (%):</label><input type="number" id="ocupacao" value="80" oninput="calcularHubbart()"></div>
+                    <div><label>Capital Próprio (€):</label><input type="number" id="capital" value="4500000" oninput="calcularHubbart()"></div>
+                    <div><label>Lucro Desejado (ROE %):</label><input type="number" id="roe" value="17" oninput="calcularHubbart()"></div>
+                    <div><label>Imposto IRC (%):</label><input type="number" id="irc" value="40" oninput="calcularHubbart()"></div>
+                    <div><label>Empréstimo Bancário (€):</label><input type="number" id="emprestimo" value="7500000" oninput="calcularHubbart()"></div>
+                    <div><label>Taxa de Juro (%):</label><input type="number" id="juros" value="12" oninput="calcularHubbart()"></div>
+                    <div><label>Custo Direto por Quarto (€):</label><input type="number" id="custoQuarto" value="12" oninput="calcularHubbart()"></div>
+                    <div style="grid-column: 1 / -1;"><label>Custos Gerais (€):</label><input type="number" id="custosGerais" value="2050000" oninput="calcularHubbart()"></div>
+                    <div style="grid-column: 1 / -1;"><label>Outras Receitas (€):</label><input type="number" id="outrasReceitas" value="295000" oninput="calcularHubbart()"></div>
                     <div class="area-botoes">
                         <button type="button" class="btn-imprimir" onclick="window.print()">🖨️ Imprimir / PDF</button>
-                        <button type="button" class="btn-limpar" onclick="limparDados()">🔄 Restaurar Valores</button>
+                        <button type="button" class="btn-limpar" onclick="document.getElementById('formHubbart').reset(); calcularHubbart();">🔄 Restaurar Valores</button>
                     </div>
                 </form>
             </div>
-
             <div class="area-resultados">
                 <div class="result-box">
-                    <div class="result-item"><strong>Total de Diárias:</strong> <br><span id="resDiarias"></span></div>
-                    <div class="result-item"><strong>Lucro Antes de Impostos:</strong> <br><span id="resLucro"></span></div>
                     <div class="result-item"><strong>Receita Exigida Total:</strong> <br><span id="resReceita"></span></div>
-                    <div class="final-adr">
-                        Diária Média (ADR)<br> <span id="resAdr"></span>
-                    </div>
-                    
-                    <div style="margin-top: 25px;">
-                        <canvas id="graficoHubbart"></canvas>
-                    </div>
+                    <div class="final-adr">Diária Média (ADR)<br> <span id="resAdr"></span></div>
+                    <div style="margin-top: 25px;"><canvas id="graficoHubbart"></canvas></div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <div id="tab-revpar" class="tab-content" style="display: none; text-align: center; padding: 50px;">
-        <h3 style="color: #58a6ff;">🚧 Em construção...</h3>
-        <p>Aqui poderemos colocar a calculadora de RevPAR, TrevPAR e GOPPAR mais tarde!</p>
+    <div id="tab-kpis" class="tab-content" style="display: none;">
+        <div class="layout-principal">
+            <div class="area-inputs">
+                <form id="formKpis" class="grelha-inputs">
+                    <div style="grid-column: 1 / -1;"><label>Receita Total de Alojamento (€):</label><input type="number" id="kpiReceita" value="500000" oninput="calcularKpis()"></div>
+                    <div><label>Quartos Disponíveis:</label><input type="number" id="kpiDisp" value="5000" oninput="calcularKpis()"></div>
+                    <div><label>Quartos Ocupados:</label><input type="number" id="kpiOcup" value="3500" oninput="calcularKpis()"></div>
+                    <div><label>IVA (%):</label><input type="number" id="kpiIva" value="6" oninput="calcularKpis()"></div>
+                    <div><label>Comissão Distribuição (%):</label><input type="number" id="kpiCom" value="15" oninput="calcularKpis()"></div>
+                    <div style="grid-column: 1 / -1;"><label>COPAR - Custo por Quarto Disponível (€):</label><input type="number" id="kpiCopar" value="20" oninput="calcularKpis()"></div>
+                </form>
+            </div>
+            <div class="area-resultados">
+                <div class="result-box">
+                    <div class="result-item"><strong>ADR:</strong> <span id="resKpiAdr"></span></div>
+                    <div class="result-item"><strong>RevPAR:</strong> <span id="resKpiRevpar"></span></div>
+                    <div class="result-item"><strong>NetRevPAR:</strong> <span id="resKpiNet"></span></div>
+                    <div class="final-adr">Markup Líquido<br> <span id="resKpiMarkup"></span><br><span id="resKpiStatus" style="font-size: 14px;"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-custos" class="tab-content" style="display: none;">
+        <div class="layout-principal">
+            <div class="area-inputs">
+                <form id="formCustos" class="grelha-inputs">
+                    <h3 style="grid-column: 1 / -1; margin-bottom: 0; color: #58a6ff;">Regra 1€ por 1000€</h3>
+                    <div><label>Investimento Total (€):</label><input type="number" id="milInvest" value="1000000" oninput="calcularCustos()"></div>
+                    <div><label>Nº de Quartos:</label><input type="number" id="milQuartos" value="80" oninput="calcularCustos()"></div>
+                    
+                    <h3 style="grid-column: 1 / -1; margin-bottom: 0; color: #58a6ff; border-top: 1px solid #30363d; padding-top: 15px;">Break-Even Point</h3>
+                    <div style="grid-column: 1 / -1;"><label>Custos Fixos Totais (€):</label><input type="number" id="beFixos" value="400000" oninput="calcularCustos()"></div>
+                    <div><label>Custo Variável Unitário (€):</label><input type="number" id="beVar" value="15" oninput="calcularCustos()"></div>
+                    <div><label>Preço de Venda Unitário (€):</label><input type="number" id="bePreco" value="40" oninput="calcularCustos()"></div>
+                </form>
+            </div>
+            <div class="area-resultados">
+                <div class="result-box">
+                    <div class="result-item"><strong>Preço Estimado (1/1000):</strong> <br><span id="resMilPreco" style="font-size: 20px; color:#3fb950; font-weight:bold;"></span></div>
+                    <div class="result-item" style="border-top: 1px dashed #30363d; padding-top: 15px; margin-top: 15px;"><strong>Ponto Morto (Volume):</strong> <br><span id="resBeVol" style="font-size: 20px; color:#58a6ff; font-weight:bold;"></span> quartos</div>
+                    <div class="result-item"><strong>Receita Necessária:</strong> <br><span id="resBeRec"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-hitmiss" class="tab-content" style="display: none;">
+        <div class="layout-principal">
+            <div class="area-inputs">
+                <form id="formHit" class="grelha-inputs">
+                    <div style="grid-column: 1 / -1;"><label>Total de Quartos no Hotel:</label><input type="number" id="hitQuartos" value="100" oninput="calcularHitMiss()"></div>
+                    
+                    <h4 style="grid-column: 1 / -1; margin: 5px 0;">❄️ Época Baixa</h4>
+                    <div><label>Preço (€):</label><input type="number" id="hitBaixaP" value="100" oninput="calcularHitMiss()"></div>
+                    <div><label>Ocupação (%):</label><input type="number" id="hitBaixaO" value="80" oninput="calcularHitMiss()"></div>
+
+                    <h4 style="grid-column: 1 / -1; margin: 5px 0;">🌼 Época Média</h4>
+                    <div><label>Preço (€):</label><input type="number" id="hitMediaP" value="140" oninput="calcularHitMiss()"></div>
+                    <div><label>Ocupação (%):</label><input type="number" id="hitMediaO" value="75" oninput="calcularHitMiss()"></div>
+
+                    <h4 style="grid-column: 1 / -1; margin: 5px 0;">☀️ Época Alta</h4>
+                    <div><label>Preço (€):</label><input type="number" id="hitAltaP" value="190" oninput="calcularHitMiss()"></div>
+                    <div><label>Ocupação (%):</label><input type="number" id="hitAltaO" value="70" oninput="calcularHitMiss()"></div>
+                </form>
+            </div>
+            <div class="area-resultados">
+                <div class="result-box">
+                    <div class="result-item"><strong>Receita Época Baixa:</strong> <br><span id="resHitBaixa"></span></div>
+                    <div class="result-item"><strong>Receita Época Média:</strong> <br><span id="resHitMedia"></span></div>
+                    <div class="result-item"><strong>Receita Época Alta:</strong> <br><span id="resHitAlta"></span></div>
+                    <div class="final-adr" style="color: #58a6ff;">Maior Rentabilidade:<br> <span id="resHitVencedor"></span></div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
