@@ -1,26 +1,120 @@
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background-color: #0d1117; color: #c9d1d9; padding: 20px; margin: 0; }
-h2 { text-align: center; color: #c9d1d9; margin-bottom: 20px; }
-.container { max-width: 1000px; margin: 0 auto; background-color: #161b22; border: 1px solid #30363d; padding: 25px; border-radius: 6px; }
+/* --- ESTILOS DO ECRÃ (DARK MODE) --- */
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
+    background-color: #0d1117; 
+    color: #c9d1d9; 
+    padding: 20px; 
+    margin: 0; 
+}
 
-.tab-menu { display: flex; border-bottom: 1px solid #30363d; margin-bottom: 25px; overflow-x: auto; }
-.tab-btn { background: none; color: #8b949e; border: none; padding: 12px 15px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; border-bottom: 2px solid transparent; }
+h2 { text-align: center; color: #c9d1d9; margin-bottom: 20px; }
+
+.container { 
+    max-width: 1000px; 
+    margin: 0 auto; 
+    background-color: #161b22; 
+    border: 1px solid #30363d; 
+    padding: 25px; 
+    border-radius: 6px; 
+}
+
+/* NAVEGAÇÃO */
+.tab-menu { 
+    display: flex; 
+    border-bottom: 1px solid #30363d; 
+    margin-bottom: 25px; 
+    overflow-x: auto; 
+}
+.tab-btn { 
+    background: none; 
+    color: #8b949e; 
+    border: none; 
+    padding: 12px 15px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    white-space: nowrap; 
+    border-bottom: 2px solid transparent; 
+}
 .tab-btn.active { color: #58a6ff; border-bottom: 2px solid #58a6ff; }
 
+/* LAYOUT */
 .layout-principal { display: flex; gap: 25px; flex-wrap: wrap; }
 .area-inputs { flex: 1.5; min-width: 300px; }
 .area-resultados { flex: 1; min-width: 280px; }
 
 .grelha-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #8b949e; }
-input, select { width: 100%; padding: 8px; background-color: #0d1117; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; font-size: 14px; }
+input, select { 
+    width: 100%; 
+    padding: 8px; 
+    background-color: #0d1117; 
+    color: #c9d1d9; 
+    border: 1px solid #30363d; 
+    border-radius: 6px; 
+    font-size: 14px; 
+}
 
-.result-box { padding: 20px; background-color: rgba(35, 134, 54, 0.05); border: 1px solid #238636; border-radius: 6px; }
-.result-item { margin-bottom: 12px; font-size: 15px; border-bottom: 1px solid #30363d; padding-bottom: 8px; }
-.final-adr { font-size: 22px; font-weight: bold; color: #3fb950; text-align: center; padding-top: 10px; }
+/* RESULTADOS NO ECRÃ */
+.result-box { 
+    padding: 20px; 
+    background-color: rgba(35, 134, 54, 0.05); 
+    border: 1px solid #238636; 
+    border-radius: 6px; 
+}
+.result-item { 
+    margin-bottom: 12px; 
+    font-size: 15px; 
+    border-bottom: 1px solid #30363d; 
+    padding-bottom: 8px; 
+}
+.final-adr { 
+    font-size: 22px; 
+    font-weight: bold; 
+    color: #3fb950; 
+    text-align: center; 
+    padding-top: 10px; 
+}
 
 .area-botoes { grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 15px; }
 button.btn-imprimir { background: #238636; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
 button.btn-limpar { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; padding: 10px; border-radius: 6px; cursor: pointer; }
 
 @media (max-width: 768px) { .grelha-inputs { grid-template-columns: 1fr; } }
-@media print { .tab-menu, .area-botoes { display: none; } body { background: white; color: black; } .container { border: none; } }
+
+/* --- AJUSTE FINAL PARA IMPRESSÃO --- */
+@media print {
+    /* Reset de cores para poupar tinta e ser legível */
+    body { background: white !important; color: black !important; padding: 0; margin: 0; }
+    .container { background: white !important; border: none !important; width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+    h2 { color: black !important; margin-top: 0; }
+    
+    /* Esconde o que não interessa no papel */
+    .tab-menu, .area-botoes { display: none !important; }
+    
+    /* Força os elementos a ficarem um por baixo do outro para não encavalitar */
+    .layout-principal { display: block !important; }
+    .area-inputs, .area-resultados { width: 100% !important; display: block !important; }
+    
+    /* Estilo dos campos na impressão */
+    label { color: #333 !important; margin-top: 10px; }
+    input { background: white !important; color: black !important; border: 1px solid #ccc !important; }
+    
+    /* Caixa de resultados limpa */
+    .result-box { 
+        background: #f9f9f9 !important; 
+        border: 2px solid #238636 !important; 
+        margin-top: 30px; 
+        page-break-inside: avoid; /* Evita cortar a caixa a meio entre páginas */
+    }
+    .result-item { border-bottom: 1px solid #ddd !important; color: black !important; }
+    .result-item strong { color: #555 !important; }
+    .final-adr { color: #1a7f37 !important; font-size: 28px !important; }
+
+    /* Ajuste do Gráfico para não tapar o texto */
+    canvas { 
+        max-width: 300px !important; 
+        margin: 20px auto !important; 
+        display: block !important; 
+    }
+}
