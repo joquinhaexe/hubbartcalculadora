@@ -1,65 +1,45 @@
-/* --- ESTILOS DO ECRÃ (DARK MODE) --- */
-body { 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
-    background-color: #0d1117; 
-    color: #c9d1d9; 
-    padding: 20px; 
-    margin: 0; 
-}
-
-h2 { text-align: center; color: #c9d1d9; margin-bottom: 30px; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background-color: #0d1117; color: #c9d1d9; padding: 20px; margin: 0; }
+h2 { text-align: center; color: #c9d1d9; margin-bottom: 20px; }
 
 .container { max-width: 1000px; margin: 0 auto; background-color: #161b22; border: 1px solid #30363d; padding: 30px; border-radius: 6px; }
 
+/* ESTILOS DO NOVO MENU DE NAVEGAÇÃO */
+.tab-menu { display: flex; border-bottom: 1px solid #30363d; margin-bottom: 25px; }
+.tab-btn { background: none; color: #8b949e; border: none; padding: 12px 20px; font-size: 15px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: 0.2s; }
+.tab-btn:hover { color: #c9d1d9; }
+.tab-btn.active { color: #58a6ff; border-bottom: 2px solid #58a6ff; }
+
+/* ESTILOS DA CALCULADORA */
 .layout-principal { display: flex; gap: 30px; flex-wrap: wrap; }
 .area-inputs { flex: 2; min-width: 300px; }
 .grelha-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
 label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #c9d1d9; }
-input { 
-    width: 100%; padding: 10px; background-color: #0d1117; color: #c9d1d9; 
-    border: 1px solid #30363d; border-radius: 6px; box-sizing: border-box; font-size: 15px; 
-}
+input { width: 100%; padding: 10px; background-color: #0d1117; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
 input:focus { border-color: #58a6ff; outline: none; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3); }
 
 .area-resultados { flex: 1; min-width: 300px; }
-
-.result-box { 
-    padding: 25px; background-color: rgba(35, 134, 54, 0.1); border: 1px solid #238636; 
-    border-radius: 6px; height: 100%; box-sizing: border-box; display: flex; 
-    flex-direction: column; justify-content: center; 
-}
-
+.result-box { padding: 25px; background-color: rgba(35, 134, 54, 0.1); border: 1px solid #238636; border-radius: 6px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }
 .result-item { margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #30363d; padding-bottom: 10px;}
 .result-item strong { color: #8b949e; }
-
 .final-adr { font-size: 26px; font-weight: bold; color: #3fb950; text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #30363d; }
 
-/* Estilo dos Botões */
 .area-botoes { grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 10px; }
-button { 
-    padding: 10px 15px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; 
-}
+button { padding: 10px 15px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
 .btn-imprimir { background-color: #238636; color: white; border: 1px solid rgba(240,246,252,0.1); }
 .btn-imprimir:hover { background-color: #2ea043; }
-
 .btn-limpar { background-color: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
 .btn-limpar:hover { background-color: #30363d; }
 
-@media (max-width: 768px) {
-    .grelha-inputs { grid-template-columns: 1fr; }
-}
+@media (max-width: 768px) { .grelha-inputs { grid-template-columns: 1fr; } }
 
-/* --- ESTILOS PARA IMPRESSÃO / PDF --- */
 @media print {
     body { background-color: white; color: black; padding: 0; }
     .container { background-color: white; border: none; padding: 0; max-width: 100%; }
-    h2 { color: black; }
-    label { color: #333; }
+    h2 { color: black; } label { color: #333; }
     input { background-color: white; color: black; border: 1px solid #ccc; }
     .result-box { background-color: #f6fff8; border: 2px solid #238636; }
-    .result-item { border-bottom: 1px solid #ccc; }
-    .result-item strong { color: black; }
+    .result-item { border-bottom: 1px solid #ccc; } .result-item strong { color: black; }
     .final-adr { border-top: 1px dashed #ccc; color: #1a5e20; }
-    .area-botoes { display: none; }
+    .area-botoes, .tab-menu { display: none; }
 }
