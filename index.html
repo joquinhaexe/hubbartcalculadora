@@ -53,12 +53,20 @@
         <div class="layout-principal">
             <div class="area-inputs">
                 <form id="formKpis" class="grelha-inputs">
+                    <h3 style="grid-column: 1 / -1; margin-bottom: 0; color: #58a6ff;">1. Calcular o Markup</h3>
                     <div style="grid-column: 1 / -1;"><label>Receita Total de Alojamento (€):</label><input type="number" id="kpiReceita" value="500000" oninput="calcularKpis()"></div>
                     <div><label>Quartos Disponíveis:</label><input type="number" id="kpiDisp" value="5000" oninput="calcularKpis()"></div>
                     <div><label>Quartos Ocupados:</label><input type="number" id="kpiOcup" value="3500" oninput="calcularKpis()"></div>
                     <div><label>IVA (%):</label><input type="number" id="kpiIva" value="6" oninput="calcularKpis()"></div>
-                    <div><label>Comissão Distribuição (%):</label><input type="number" id="kpiCom" value="15" oninput="calcularKpis()"></div>
-                    <div style="grid-column: 1 / -1;"><label>COPAR - Custo por Quarto Disponível (€):</label><input type="number" id="kpiCopar" value="20" oninput="calcularKpis()"></div>
+                    <div><label>Comissão (%):</label><input type="number" id="kpiCom" value="15" oninput="calcularKpis()"></div>
+                    <div style="grid-column: 1 / -1;"><label>COPAR Conhecido (€):</label><input type="number" id="kpiCopar" value="20" oninput="calcularKpis()"></div>
+
+                    <h3 style="grid-column: 1 / -1; margin-bottom: 0; color: #d2a8ff; border-top: 1px solid #30363d; padding-top: 15px;">2. Descobrir o COPAR (Cálculo Inverso)</h3>
+                    <div><label>RevPAR (€):</label><input type="number" id="invRevpar" value="200" oninput="calcularInverso()"></div>
+                    <div><label>IVA (%):</label><input type="number" id="invIva" value="6" oninput="calcularInverso()"></div>
+                    <div><label>Comissão (%):</label><input type="number" id="invCom" value="0" oninput="calcularInverso()"></div>
+                    <div><label>Markup Desejado:</label><input type="number" id="invMarkup" value="4.05" oninput="calcularInverso()"></div>
+                    <div style="grid-column: 1 / -1;"><label>Apenas se pedido no exercício: % de Custos Fixos (%):</label><input type="number" id="invFixos" value="0" oninput="calcularInverso()"></div>
                 </form>
             </div>
             <div class="area-resultados">
@@ -66,7 +74,16 @@
                     <div class="result-item"><strong>ADR:</strong> <span id="resKpiAdr"></span></div>
                     <div class="result-item"><strong>RevPAR:</strong> <span id="resKpiRevpar"></span></div>
                     <div class="result-item"><strong>NetRevPAR:</strong> <span id="resKpiNet"></span></div>
-                    <div class="final-adr">Markup Líquido<br> <span id="resKpiMarkup"></span><br><span id="resKpiStatus" style="font-size: 14px;"></span></div>
+                    <div class="final-adr" style="margin-top: 10px;">Markup Líquido<br> <span id="resKpiMarkup"></span><br><span id="resKpiStatus" style="font-size: 14px;"></span></div>
+                    
+                    <div class="result-item" style="border-top: 1px dashed #30363d; padding-top: 15px; margin-top: 15px;">
+                        <strong>NetRevPAR (Inverso):</strong> <span id="resInvNet"></span>
+                    </div>
+                    <div class="final-adr" style="color: #d2a8ff; margin-top: 10px;">
+                        COPAR Máximo<br> <span id="resInvCopar"></span>
+                    </div>
+                    <div class="result-item" style="margin-top: 15px; font-size: 14px; color: #8b949e;"><strong>Custos Fixos:</strong> <span id="resInvCF"></span></div>
+                    <div class="result-item" style="font-size: 14px; color: #8b949e;"><strong>Custos Variáveis:</strong> <span id="resInvCV"></span></div>
                 </div>
             </div>
         </div>
@@ -101,15 +118,12 @@
             <div class="area-inputs">
                 <form id="formHit" class="grelha-inputs">
                     <div style="grid-column: 1 / -1;"><label>Total de Quartos no Hotel:</label><input type="number" id="hitQuartos" value="100" oninput="calcularHitMiss()"></div>
-                    
                     <h4 style="grid-column: 1 / -1; margin: 5px 0;">❄️ Época Baixa</h4>
                     <div><label>Preço (€):</label><input type="number" id="hitBaixaP" value="100" oninput="calcularHitMiss()"></div>
                     <div><label>Ocupação (%):</label><input type="number" id="hitBaixaO" value="80" oninput="calcularHitMiss()"></div>
-
                     <h4 style="grid-column: 1 / -1; margin: 5px 0;">🌼 Época Média</h4>
                     <div><label>Preço (€):</label><input type="number" id="hitMediaP" value="140" oninput="calcularHitMiss()"></div>
                     <div><label>Ocupação (%):</label><input type="number" id="hitMediaO" value="75" oninput="calcularHitMiss()"></div>
-
                     <h4 style="grid-column: 1 / -1; margin: 5px 0;">☀️ Época Alta</h4>
                     <div><label>Preço (€):</label><input type="number" id="hitAltaP" value="190" oninput="calcularHitMiss()"></div>
                     <div><label>Ocupação (%):</label><input type="number" id="hitAltaO" value="70" oninput="calcularHitMiss()"></div>
