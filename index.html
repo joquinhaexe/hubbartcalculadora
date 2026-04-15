@@ -5,30 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora - Fórmula de Hubbart</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; color: #333; margin: 0; }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        /* Fundo e texto principal com as cores do GitHub Dark */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
+            background-color: #0d1117; /* Fundo exato do GitHub */
+            color: #c9d1d9; /* Cor do texto cinza claro */
+            padding: 20px; 
+            margin: 0; 
+        }
         
-        /* O "caixote" principal agora é mais largo para caber tudo lado a lado */
-        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #c9d1d9; margin-bottom: 30px; }
         
-        /* Divide o ecrã em duas partes */
+        /* O "caixote" principal com uma cor ligeiramente mais clara para destacar do fundo */
+        .container { max-width: 1000px; margin: 0 auto; background-color: #161b22; border: 1px solid #30363d; padding: 30px; border-radius: 6px; }
+        
         .layout-principal { display: flex; gap: 30px; flex-wrap: wrap; }
-        
-        /* Lado Esquerdo: Grelha com os campos de preenchimento (2 colunas) */
         .area-inputs { flex: 2; min-width: 300px; }
         .grelha-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         
-        /* Lado Direito: Caixa de resultados verde */
+        /* Caixas de input com o estilo do GitHub */
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #c9d1d9; }
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            background-color: #0d1117; 
+            color: #c9d1d9; 
+            border: 1px solid #30363d; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 15px; 
+        }
+        
+        /* Efeito quando clicas na caixa para escrever */
+        input:focus { border-color: #58a6ff; outline: none; box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3); }
+        
         .area-resultados { flex: 1; min-width: 300px; }
-        .result-box { padding: 25px; background-color: #e8f5e9; border-left: 5px solid #4caf50; border-radius: 8px; height: 100%; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; }
         
-        /* Estilos dos textos e caixas */
-        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #34495e; }
-        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
-        .result-item { margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #c8e6c9; padding-bottom: 10px;}
-        .final-adr { font-size: 26px; font-weight: bold; color: #2e7d32; text-align: center; margin-top: 15px; padding-top: 15px; border-top: 2px dashed #4caf50; }
+        /* A caixa verde com o estilo "Success" do GitHub */
+        .result-box { 
+            padding: 25px; 
+            background-color: rgba(35, 134, 54, 0.1); /* Verde transparente */
+            border: 1px solid #238636; /* Verde GitHub */
+            border-radius: 6px; 
+            height: 100%; 
+            box-sizing: border-box; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+        }
         
-        /* Se a pessoa abrir no telemóvel, volta a ficar tudo numa coluna para não desfocar */
+        .result-item { margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid #30363d; padding-bottom: 10px;}
+        .result-item strong { color: #8b949e; }
+        
+        /* O preço final bem destacado a verde */
+        .final-adr { font-size: 26px; font-weight: bold; color: #3fb950; text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #30363d; }
+        
         @media (max-width: 768px) {
             .grelha-inputs { grid-template-columns: 1fr; }
         }
