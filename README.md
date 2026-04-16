@@ -1,6 +1,8 @@
 # 🏨 Dashboard de Gestão de Alojamentos
 ### Unidade Curricular: Gestão de Alojamentos (ESGHT-UAlg)
+[![Abrir Calculadora](https://img.shields.io/badge/TESTAR_ONLINE-CLICA_AQUI-success?style=for-the-badge&logo=github)](https://joquinhaexe.github.io/hubbartcalculadora/)
 
+---
 Este projeto é uma ferramenta interativa desenvolvida para automatizar e facilitar o cálculo de métricas essenciais na gestão hoteleira.
 
 ---
